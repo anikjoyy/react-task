@@ -4,9 +4,40 @@ const Problem1 = () => {
 
     const [show, setShow] = useState('all');
 
+    const [tasks, setTasks] = useState([]);
+
+    const [name, setName] = useState('');
+
+    const [status, setStatus] = useState('');
+
     const handleClick = (val) =>{
         setShow(val);
     }
+
+    const handleAddTask = (e) =>{
+        e.preventDefault();
+        setTasks([...tasks, {name, status}]);
+        setName('');
+        setStatus('');
+    }
+
+    const filteredTasks = tasks.filter((task) => {
+        if (show === 'all') {
+            return true;
+        } else {
+            return task.status === show;
+        }
+    });
+
+    filteredTasks.sort((a, b) => {
+        if (a.status === 'Active' && b.status !== 'Active') {
+            return -1;
+        } else if (a.status === 'Completed' && b.status !== 'Completed') {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
 
     return (
 
@@ -14,12 +45,20 @@ const Problem1 = () => {
             <div className="row justify-content-center mt-5">
                 <h4 className='text-center text-uppercase mb-5'>Problem-1</h4>
                 <div className="col-6 ">
-                    <form className="row gy-2 gx-3 align-items-center mb-4">
+                    <form className="row gy-2 gx-3 align-items-center mb-4" onSubmit={handleAddTask}>
                         <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Name"/>
+                            <input type="text" 
+                                    className="form-control" 
+                                    placeholder="Name" 
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}/>
                         </div>
                         <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Status"/>
+                            <input type="text" 
+                                    className="form-control" 
+                                    placeholder="Status"
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}/>
                         </div>
                         <div className="col-auto">
                             <button type="submit" className="btn btn-primary">Submit</button>
@@ -47,7 +86,12 @@ const Problem1 = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        
+                        {filteredTasks.map((task, index) => (
+                                <tr key={index}>
+                                    <td>{task.name}</td>
+                                    <td>{task.status}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
